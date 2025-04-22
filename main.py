@@ -9,19 +9,25 @@ from mcp.server.sse import SseServerTransport
 from starlette.routing import Mount
 
 # Models for request validation
+
+
 class InstallServiceRequest(BaseModel):
     git: str
+
 
 class ServiceInfoRequest(BaseModel):
     directory: str
     port_map: Optional[int] = None
 
+
 class StopServiceRequest(BaseModel):
     port_map: int
     directory: Optional[str] = None
 
+
 class DashboardRequest(BaseModel):
     directory: str
+
 
 app = FastAPI(
     title="MyModel API",
@@ -47,14 +53,23 @@ JOB_INTERVAL = int(os.getenv("JOB_INTERVAL", 60))
 model = MyModel()
 
 class ActionRequest(BaseModel):
-    command: str
-    params: Dict[str, Any]
+    prompt: str
+    model_id: str
+    task: str
+    text: str
+    max_gen_len: int
+    temperature: float
+    top_k: int
+    top_p: float
+    seed: int
+
 
 @app.post("/action")
-async def action(request: ActionRequest):
+async def action(command: str = Query(...), params: ActionParams = None):
     try:
-        print(request.command, request.params)
-        result = model.action(request.command, **request.params)
+        print("command", command)
+        print("params", params)
+        result = model.action(command, **params.dict())
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
