@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Response, Request
+from fastapi import FastAPI, HTTPException, Query, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from typing import Dict, Any, Optional
@@ -65,11 +65,11 @@ class ActionRequest(BaseModel):
 
 
 @app.post("/action")
-async def action(command: str = Query(...), params: ActionParams = None):
+async def action(command: str = Query(...), params: ActionRequest = None):
     try:
         print("command", command)
         print("params", params)
-        result = model.action(command, **params.dict())
+        result = model.action(command, **params.model_dump())
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
