@@ -54,14 +54,14 @@ model = MyModel()
 
 class ActionRequest(BaseModel):
     prompt: str
-    model_id: str
-    task: str
-    text: str
-    max_gen_len: int
-    temperature: float
-    top_k: int
-    top_p: float
-    seed: int
+    model_id: Optional[str] = None
+    task: Optional[str] = None
+    text: Optional[str] = None
+    max_gen_len: Optional[int] = None
+    temperature: Optional[float] = None
+    top_k: Optional[int] = None
+    top_p: Optional[float] = None
+    seed: Optional[int] = None
 
 
 @app.post("/action")
